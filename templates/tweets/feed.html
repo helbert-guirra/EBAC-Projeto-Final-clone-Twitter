@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}Início — Twitter Clone{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="sticky top-0 bg-black/80 backdrop-blur-sm border-b border-gray-800 px-4 py-3 z-10">
+  <h1 class="text-xl font-bold">Início</h1>
+</div>
+
+<!-- Compose tweet -->
+<div class="flex gap-3 p-4 border-b border-gray-800">
+  <img src="{{ user.get_avatar_url }}" class="w-12 h-12 rounded-full object-cover flex-shrink-0" />
+  <form method="post" action="{% url 'create_tweet' %}" enctype="multipart/form-data" class="flex-1">
+    {% csrf_token %}
+    <textarea
+      name="content"
+      maxlength="280"
+      placeholder="O que está acontecendo?"
+      class="w-full bg-transparent text-xl placeholder-gray-600 focus:outline-none resize-none mt-2"
+      rows="3"
+      id="tweetContent"
+    ></textarea>
+
+    <!-- Prévia de mídia -->
+    <div id="mediaPreview" class="hidden mt-2">
+      <img id="imgPreview" class="hidden rounded-2xl max-h-72 object-cover w-full" />
+      <video id="vidPreview" class="hidden rounded-2xl max-h-72 w-full" controls></video>
+    </div>
+
+    <div class="flex items-center justify-between mt-3 border-t border-gray-800 pt-3">
+      <div class="flex gap-2 text-twitter">
+        <!-- Upload de imagem -->
+        <label class="btn-ghost cursor-pointer" title="Foto">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <input type="file" name="image" accept="image/*" class="hidden" id="imageInput" />
+        </label>
+        <!-- Upload de vídeo -->
+        <label class="btn-ghost cursor-pointer" title="Vídeo">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M4 8h8a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2z"/></svg>
+          <input type="file" name="video" accept="video/*" class="hidden" id="videoInput" />
+        </label>
+        <!-- Contador de caracteres -->
+        <span id="charCount" class="text-gray-600 text-sm self-center ml-2">280</span>
+      </div>
+      <button type="submit" class="btn-primary" id="tweetBtn" disabled>Tweetar</button>
+    </div>
+  </form>
+</div>
+
+<!-- Tweet list -->
+<div id="tweetList">
+  {% for tweet in tweets %}
+    {% include "tweets/_tweet_card.html" %}
+  {% empty %}
+    <div class="text-center text-gray-500 py-16">
+      <p class="text-xl">Nenhum tweet ainda.</p>
+      <p class="mt-2 text-sm">Siga alguém ou escreva o primeiro tweet!</p>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const textarea = document.getElementById('tweetContent');
+const charCount = document.getElementById('charCount');
+const tweetBtn = document.getElementById('tweetBtn');
+
+textarea.addEventListener('input', () => {
+  const remaining = 280 - textarea.value.length;
+  charCount.textContent = remaining;
+  charCount.className = remaining < 20 ? 'text-red-400 text-sm self-center ml-2' : 'text-gray-600 text-sm self-center ml-2';
+  tweetBtn.disabled = textarea.value.trim().length === 0;
+});
+
+// Prévia de imagem
+document.getElementById('imageInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  document.getElementById('mediaPreview').classList.remove('hidden');
+  const img = document.getElementById('imgPreview');
+  img.src = URL.createObjectURL(file);
+  img.classList.remove('hidden');
+  document.getElementById('vidPreview').classList.add('hidden');
+});
+
+// Prévia de vídeo
+document.getElementById('videoInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  document.getElementById('mediaPreview').classList.remove('hidden');
+  const vid = document.getElementById('vidPreview');
+  vid.src = URL.createObjectURL(file);
+  vid.classList.remove('hidden');
+  document.getElementById('imgPreview').classList.add('hidden');
+});
+
+// Like via AJAX
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('[data-action="like"]');
+  if (!btn) return;
+  const tweetId = btn.dataset.tweetId;
+  const res = await fetch(`/tweet/${tweetId}/like/`, {
+    method: 'POST',
+    headers: {'X-CSRFToken': getCookie('csrftoken')},
+  });
+  const data = await res.json();
+  btn.querySelector('.like-count').textContent = data.count;
+  btn.classList.toggle('text-red-500', data.liked);
+  btn.classList.toggle('text-gray-500', !data.liked);
+});
+
+// Retweet via AJAX
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('[data-action="retweet"]');
+  if (!btn) return;
+  const tweetId = btn.dataset.tweetId;
+  const res = await fetch(`/tweet/${tweetId}/retweet/`, {
+    method: 'POST',
+    headers: {'X-CSRFToken': getCookie('csrftoken')},
+  });
+  const data = await res.json();
+  btn.querySelector('.retweet-count').textContent = data.count;
+  btn.classList.toggle('text-green-400', data.retweeted);
+  btn.classList.toggle('text-gray-500', !data.retweeted);
+});
+
+// Toggle comentários
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-action="toggle-comments"]');
+  if (!btn) return;
+  const tweetId = btn.dataset.tweetId;
+  document.getElementById(`comments-${tweetId}`).classList.toggle('hidden');
+});
+
+// Enviar comentário via AJAX
+document.addEventListener('submit', async (e) => {
+  if (!e.target.classList.contains('comment-form')) return;
+  e.preventDefault();
+  const form = e.target;
+  const tweetId = form.dataset.tweetId;
+  const textarea = form.querySelector('textarea');
+  const res = await fetch(`/tweet/${tweetId}/comment/`, {
+    method: 'POST',
+    body: new FormData(form),
+    headers: {'X-CSRFToken': getCookie('csrftoken')},
+  });
+  const data = await res.json();
+  if (data.success) {
+    const list = document.getElementById(`comment-list-${tweetId}`);
+    const div = document.createElement('div');
+    div.className = 'flex gap-2 py-2 border-t border-gray-800';
+    div.innerHTML = `
+      <img src="${data.avatar}" class="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+      <div>
+        <span class="font-bold text-sm">@${data.username}</span>
+        <p class="text-sm text-gray-300">${data.content}</p>
+      </div>`;
+    list.appendChild(div);
+    textarea.value = '';
+    form.closest('[data-tweet-id]')?.querySelector('.comment-btn .comment-count')?.textContent && null;
+  }
+});
+
+function getCookie(name) {
+  const val = document.cookie.split('; ').find(r => r.startsWith(name + '='));
+  return val ? val.split('=')[1] : '';
+}
+</script>
+{% endblock %}

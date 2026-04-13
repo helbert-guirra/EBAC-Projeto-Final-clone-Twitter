@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Criar conta — Twitter Clone{% endblock %}
+
+{% block auth_content %}
+<div class="w-full max-w-sm">
+  <div class="text-twitter text-5xl font-black text-center mb-8">𝕏</div>
+  <h1 class="text-3xl font-bold mb-8 text-center">Criar sua conta</h1>
+
+  <form method="post" class="flex flex-col gap-4">
+    {% csrf_token %}
+    {% for field in form %}
+    <div>
+      <label class="block text-sm text-gray-400 mb-1">{{ field.label }}</label>
+      <input
+        type="{{ field.field.widget.input_type }}"
+        name="{{ field.html_name }}"
+        id="{{ field.id_for_label }}"
+        value="{{ field.value|default:'' }}"
+        class="w-full bg-transparent border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-twitter transition"
+      />
+      {% if field.errors %}
+        <p class="text-red-400 text-xs mt-1">{{ field.errors|join:", " }}</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+    <button type="submit" class="btn-primary w-full py-3 mt-2 text-lg">Criar conta</button>
+  </form>
+
+  <p class="text-center text-gray-500 mt-6">
+    Já tem conta?
+    <a href="{% url 'login' %}" class="text-twitter hover:underline">Entrar</a>
+  </p>
+</div>
+{% endblock %}

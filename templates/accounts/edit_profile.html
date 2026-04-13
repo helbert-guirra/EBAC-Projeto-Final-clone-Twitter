@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Editar perfil{% endblock %}
+
+{% block content %}
+<div class="sticky top-0 bg-black/80 backdrop-blur-sm border-b border-gray-800 px-4 py-3 z-10 flex items-center gap-4">
+  <a href="javascript:history.back()" class="btn-ghost">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+  </a>
+  <h1 class="text-xl font-bold flex-1">Editar perfil</h1>
+  <button form="profileForm" type="submit" class="btn-primary text-sm">Salvar</button>
+</div>
+
+<form id="profileForm" method="post" enctype="multipart/form-data" class="p-4 flex flex-col gap-5">
+  {% csrf_token %}
+  {% for field in form %}
+  <div>
+    <label class="block text-sm text-gray-400 mb-1">
+      {{ field.label }}
+      <span class="text-gray-600 text-xs">(opcional)</span>
+    </label>
+    {% if field.field.widget.input_type == 'file' %}
+      <input type="file" name="{{ field.html_name }}" accept="image/*"
+        class="text-sm text-gray-400 file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-sm file:bg-twitter file:text-white hover:file:bg-blue-500 cursor-pointer" />
+    {% elif field.field.widget.attrs.rows %}
+      <textarea name="{{ field.html_name }}" rows="{{ field.field.widget.attrs.rows }}" maxlength="160"
+        class="w-full bg-transparent border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-600 focus:outline-none focus:border-twitter transition resize-none"
+      >{{ field.value|default:'' }}</textarea>
+    {% else %}
+      <input type="text" name="{{ field.html_name }}" value="{{ field.value|default:'' }}"
+        class="w-full bg-transparent border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-600 focus:outline-none focus:border-twitter transition" />
+    {% endif %}
+    {% if field.errors %}
+      <p class="text-red-400 text-xs mt-1">{{ field.errors|join:", " }}</p>
+    {% endif %}
+  </div>
+  {% endfor %}
+</form>
+{% endblock %}

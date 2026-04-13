@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}@{{ profile_user.username }} — Twitter Clone{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="sticky top-0 bg-black/80 backdrop-blur-sm border-b border-gray-800 px-4 py-3 z-10 flex items-center gap-4">
+  <a href="javascript:history.back()" class="btn-ghost">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+  </a>
+  <div>
+    <h1 class="text-xl font-bold">{{ profile_user.get_full_name|default:profile_user.username }}</h1>
+    <p class="text-gray-500 text-sm">{{ tweets.count }} tweets</p>
+  </div>
+</div>
+
+<!-- Cover image -->
+<div class="relative h-48 bg-gray-800">
+  {% if profile_user.get_cover_url %}
+  <img src="{{ profile_user.get_cover_url }}" class="w-full h-full object-cover" />
+  {% endif %}
+
+  <!-- Avatar sobre a capa -->
+  <div class="absolute -bottom-16 left-4 ring-4 ring-black rounded-full">
+    <img src="{{ profile_user.get_avatar_url }}" class="w-32 h-32 rounded-full object-cover" />
+  </div>
+</div>
+
+<!-- Profile info -->
+<div class="pt-20 px-4 pb-4 border-b border-gray-800">
+  <div class="flex justify-end gap-2 mb-4">
+    {% if profile_user == user %}
+      <a href="{% url 'edit_profile' %}" class="border border-gray-600 text-white font-bold rounded-full px-5 py-1.5 hover:bg-gray-900 transition text-sm">
+        Editar perfil
+      </a>
+      <a href="{% url 'change_password' %}" class="border border-gray-600 text-white font-bold rounded-full px-5 py-1.5 hover:bg-gray-900 transition text-sm">
+        Alterar senha
+      </a>
+    {% else %}
+      <button
+        id="followBtn"
+        data-user-id="{{ profile_user.pk }}"
+        class="font-bold rounded-full px-5 py-1.5 transition text-sm
+          {% if is_following %}border border-gray-600 text-white hover:border-red-500 hover:text-red-400
+          {% else %}bg-white text-black hover:bg-gray-200{% endif %}"
+      >
+        {% if is_following %}Seguindo{% else %}Seguir{% endif %}
+      </button>
+    {% endif %}
+  </div>
+
+  <h2 class="text-2xl font-bold">{{ profile_user.get_full_name|default:profile_user.username }}</h2>
+  <p class="text-gray-500">@{{ profile_user.username }}</p>
+
+  {% if profile_user.bio %}
+  <p class="mt-3 text-[15px]">{{ profile_user.bio }}</p>
+  {% endif %}
+
+  <div class="flex gap-6 mt-4 text-sm">
+    <a href="{% url 'following' username=profile_user.username %}" class="hover:underline">
+      <span class="font-bold text-white">{{ profile_user.following_count }}</span>
+      <span class="text-gray-500"> Seguindo</span>
+    </a>
+    <a href="{% url 'followers' username=profile_user.username %}" class="hover:underline">
+      <span class="font-bold text-white">{{ profile_user.followers_count }}</span>
+      <span class="text-gray-500"> Seguidores</span>
+    </a>
+  </div>
+</div>
+
+<!-- Tweets do perfil -->
+<div>
+  {% for tweet in tweets %}
+    {% include "tweets/_tweet_card.html" %}
+  {% empty %}
+    <div class="text-center text-gray-500 py-16">
+      <p>Nenhum tweet ainda.</p>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const followBtn = document.getElementById('followBtn');
+if (followBtn) {
+  followBtn.addEventListener('click', async () => {
+    const userId = followBtn.dataset.userId;
+    const res = await fetch(`/accounts/follow/${userId}/`, {
+      method: 'POST',
+      headers: {'X-CSRFToken': getCookie('csrftoken')},
+    });
+    const data = await res.json();
+    if (data.following) {
+      followBtn.textContent = 'Seguindo';
+      followBtn.className = 'font-bold rounded-full px-5 py-1.5 transition text-sm border border-gray-600 text-white hover:border-red-500 hover:text-red-400';
+    } else {
+      followBtn.textContent = 'Seguir';
+      followBtn.className = 'font-bold rounded-full px-5 py-1.5 transition text-sm bg-white text-black hover:bg-gray-200';
+    }
+  });
+}
+function getCookie(name) {
+  const val = document.cookie.split('; ').find(r => r.startsWith(name + '='));
+  return val ? val.split('=')[1] : '';
+}
+</script>
+{% endblock %}
