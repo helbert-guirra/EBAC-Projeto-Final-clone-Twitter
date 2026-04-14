@@ -87,9 +87,10 @@ Acesse em: **http://127.0.0.1:8000**
 4. Adicione as variáveis de ambiente:
    - `SECRET_KEY` → uma chave secreta longa
    - `DEBUG` → `False`
-   - `ALLOWED_HOSTS` → `seu-app.onrender.com`
+   - `ALLOWED_HOSTS` → `seu-app.onrender.c`
 
 ---
+ Acesse a aplicação em: http://127.0.0.1:8000/ 🌐 Deploy A aplicação está hospedada e pode ser acessada através do link abaixo: 👉https://ebac-projeto-final-clone-twitter.onrender.com
 
 ## Autor
 
