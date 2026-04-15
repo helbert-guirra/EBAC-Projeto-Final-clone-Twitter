@@ -8,11 +8,9 @@ Clone funcional do Twitter construído com **Django monolítico + Tailwind CSS**
 |---|---|
 | Back-end | Python 3.11 + Django 4.2 |
 | Front-end | HTML + Tailwind CSS (CDN) + JavaScript (Fetch API) |
-| Banco de dados | SQLite (dev) |
+| Banco de dados | PostgreSQL (produção) / SQLite (desenvolvimento) |
 | Arquivos estáticos | WhiteNoise |
 | Servidor produção | Gunicorn |
-
----
 
 ## Funcionalidades
 
@@ -29,15 +27,13 @@ Clone funcional do Twitter construído com **Django monolítico + Tailwind CSS**
 - ✅ Badge de notificações não lidas no menu
 - ✅ Dark mode nativo
 
----
-
 ## Como rodar localmente
 
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/SEU_USUARIO/meu-twitter.git
-cd meu_twitter
+git clone https://github.com/helbert-guirra/EBAC-Projeto-Final-clone-Twitter.git
+cd EBAC-Projeto-Final-clone-Twitter
 ```
 
 ### 2. Crie e ative um ambiente virtual
@@ -45,11 +41,11 @@ cd meu_twitter
 ```bash
 python -m venv venv
 
-# Linux/Mac:
-source venv/bin/activate
-
 # Windows:
 venv\Scripts\activate
+
+# Linux/Mac:
+source venv/bin/activate
 ```
 
 ### 3. Instale as dependências
@@ -61,7 +57,7 @@ pip install -r requirements.txt
 ### 4. Configure as variáveis de ambiente
 
 ```bash
-cp .env.example .env
+copy .env.example .env
 # Edite o .env com sua SECRET_KEY
 ```
 
@@ -69,28 +65,15 @@ cp .env.example .env
 
 ```bash
 python manage.py migrate
-python manage.py createsuperuser  # opcional
 python manage.py runserver
 ```
 
 Acesse em: **http://127.0.0.1:8000**
 
----
+## 🌐 Deploy
 
-## Deploy (Render)
-
-1. Crie um novo **Web Service** no [Render](https://render.com)
-2. Conecte seu repositório GitHub
-3. Configure:
-   - **Build Command:** `pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput`
-   - **Start Command:** `gunicorn core.wsgi:application`
-4. Adicione as variáveis de ambiente:
-   - `SECRET_KEY` → uma chave secreta longa
-   - `DEBUG` → `False`
-   - `ALLOWED_HOSTS` → `seu-app.onrender.c`
-
----
- Acesse a aplicação em: http://127.0.0.1:8000/ 🌐 Deploy A aplicação está hospedada e pode ser acessada através do link abaixo: 👉https://ebac-projeto-final-clone-twitter.onrender.com
+A aplicação está hospedada em:
+👉 **https://ebac-projeto-final-clone-twitter.onrender.com**
 
 ## Autor
 
