@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
+from accounts.models import User
 from .models import Tweet, Comment
 from .forms import TweetForm, CommentForm
 from notifications.utils import create_notification
@@ -10,7 +11,6 @@ from notifications.utils import create_notification
 
 @login_required
 def feed(request):
-    # tweets do próprio usuário + de quem ele segue
     following_ids = request.user.following.values_list("id", flat=True)
     tweets = (
         Tweet.objects
@@ -19,9 +19,18 @@ def feed(request):
         .prefetch_related("likes", "comments")
         .order_by("-created_at")
     )
+    # Usuários que  ainda não segue (exceto eu mesmo)
+    suggested_users = (
+        User.objects.exclude(id=request.user.id)
+        .exclude(id__in=following_ids)
+        .order_by("?")[:5]
+    )
     form = TweetForm()
-    return render(request, "tweets/feed.html", {"tweets": tweets, "form": form})
-
+    return render(request, "tweets/feed.html", {
+        "tweets": tweets,
+        "form": form,
+        "suggested_users": suggested_users,
+    })
 
 @login_required
 @require_POST
