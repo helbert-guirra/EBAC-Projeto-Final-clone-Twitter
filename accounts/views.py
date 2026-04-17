@@ -108,3 +108,16 @@ def following_list(request, username):
         "users": user.following.all(),
         "title": "Seguindo",
     })
+
+@login_required
+def search_users(request):
+    query = request.GET.get("q", "").strip()
+    users = []
+    if query:
+        users = User.objects.filter(
+            username__icontains=query
+        ).exclude(pk=request.user.pk)[:20]
+    return render(request, "accounts/search.html", {
+        "users": users,
+        "query": query,
+    })

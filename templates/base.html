@@ -10,24 +10,25 @@
       darkMode: 'class',
       theme: {
         extend: {
-          colors: {
-            twitter: '#1d9bf0',
-          }
+          colors: { twitter: '#1d9bf0' }
         }
       }
     }
   </script>
   <style>
     body { font-family: 'Segoe UI', system-ui, sans-serif; }
-    .input-field {
-      @apply w-full bg-transparent border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-twitter transition;
-    }
     .btn-primary {
-      @apply bg-twitter text-white font-bold rounded-full px-5 py-2 hover:bg-blue-500 transition disabled:opacity-50;
+      background: #1d9bf0; color: white; font-weight: bold;
+      border-radius: 9999px; padding: 8px 20px;
+      transition: background 0.2s;
     }
+    .btn-primary:hover { background: #1a8cd8; }
+    .btn-primary:disabled { opacity: 0.5; }
     .btn-ghost {
-      @apply text-gray-400 hover:text-twitter hover:bg-blue-900/20 rounded-full p-2 transition;
+      color: #6b7280; border-radius: 9999px; padding: 8px;
+      transition: all 0.2s;
     }
+    .btn-ghost:hover { color: #1d9bf0; background: rgba(29,155,240,0.1); }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: #000; }
     ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
@@ -36,81 +37,88 @@
 <body class="bg-black text-white min-h-screen">
 
 {% if user.is_authenticated %}
-<div class="flex max-w-7xl mx-auto">
+<div style="display:flex; max-width:1200px; margin:0 auto;">
 
   <!-- ── SIDEBAR ── -->
-  <aside class="w-64 xl:w-72 h-screen sticky top-0 flex flex-col px-3 py-4 border-r border-gray-800">
+  <aside style="width:240px; min-width:240px; height:100vh; position:sticky; top:0; display:flex; flex-direction:column; padding:16px 12px; border-right:1px solid #2f3336; overflow-y:auto;">
+
     <!-- Logo -->
-    <a href="{% url 'feed' %}" class="text-twitter text-3xl font-black px-3 mb-4 hover:bg-blue-900/20 rounded-full w-12 h-12 flex items-center justify-center transition">
+    <a href="{% url 'feed' %}" style="color:#1d9bf0; font-size:28px; font-weight:900; width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:9999px; margin-bottom:8px;" onmouseover="this.style.background='rgba(29,155,240,0.1)'" onmouseout="this.style.background='transparent'">
       𝕏
     </a>
 
-    <!-- Nav links -->
-    <nav class="flex flex-col gap-1 flex-1">
-      <a href="{% url 'feed' %}" class="flex items-center gap-4 px-4 py-3 rounded-full hover:bg-gray-900 transition text-xl font-light">
-        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l9-9 9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
-        <span>Início</span>
+    <!-- Nav -->
+    <nav style="display:flex; flex-direction:column; gap:4px; flex:1;">
+      <a href="{% url 'feed' %}" style="display:flex; align-items:center; gap:16px; padding:12px 16px; border-radius:9999px; font-size:18px; color:white; text-decoration:none;" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l9-9 9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
+        Início
       </a>
 
-      <a href="{% url 'notifications' %}" class="flex items-center gap-4 px-4 py-3 rounded-full hover:bg-gray-900 transition text-xl font-light relative">
-        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-        <span>Notificações</span>
+      <a href="{% url 'search' %}" style="display:flex; align-items:center; gap:16px; padding:12px 16px; border-radius:9999px; font-size:18px; color:white; text-decoration:none;" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'">
+  <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+  Buscar
+</a>
+
+      <a href="{% url 'notifications' %}" style="display:flex; align-items:center; gap:16px; padding:12px 16px; border-radius:9999px; font-size:18px; color:white; text-decoration:none; position:relative;" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+        Notificações
         {% if unread_notifications_count %}
-        <span class="absolute left-8 top-2 bg-twitter text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+        <span style="position:absolute; left:32px; top:8px; background:#1d9bf0; color:white; font-size:11px; border-radius:9999px; width:20px; height:20px; display:flex; align-items:center; justify-content:center; font-weight:bold;">
           {{ unread_notifications_count }}
         </span>
         {% endif %}
       </a>
 
-      <a href="{% url 'profile' username=user.username %}" class="flex items-center gap-4 px-4 py-3 rounded-full hover:bg-gray-900 transition text-xl font-light">
-        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-        <span>Perfil</span>
+      <a href="{% url 'profile' username=user.username %}" style="display:flex; align-items:center; gap:16px; padding:12px 16px; border-radius:9999px; font-size:18px; color:white; text-decoration:none;" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        Perfil
       </a>
     </nav>
 
     <!-- User card -->
-    <a href="{% url 'profile' username=user.username %}" class="flex items-center gap-3 px-3 py-3 rounded-full hover:bg-gray-900 transition mt-auto">
-      <img src="{{ user.get_avatar_url }}" class="w-10 h-10 rounded-full object-cover" alt="avatar" />
-      <div class="flex-1 min-w-0">
-        <p class="font-bold text-sm truncate">{{ user.get_full_name|default:user.username }}</p>
-        <p class="text-gray-500 text-sm truncate">@{{ user.username }}</p>
+    <a href="{% url 'profile' username=user.username %}" style="display:flex; align-items:center; gap:12px; padding:12px; border-radius:9999px; text-decoration:none; margin-top:8px;" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'">
+      <img src="{{ user.get_avatar_url }}" style="width:40px; height:40px; border-radius:9999px; object-fit:cover; flex-shrink:0;" />
+      <div style="flex:1; min-width:0;">
+        <p style="font-weight:bold; font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:white;">{{ user.get_full_name|default:user.username }}</p>
+        <p style="color:#6b7280; font-size:13px;">@{{ user.username }}</p>
       </div>
     </a>
 
-    <!-- Botão de logout -->
-    <form method="post" action="{% url 'logout' %}">
+    <!-- Logout -->
+    <form method="post" action="{% url 'logout' %}" style="margin-top:4px;">
       {% csrf_token %}
-      <button type="submit" class="w-full flex items-center gap-4 px-4 py-3 rounded-full hover:bg-gray-900 transition text-xl font-light text-gray-400 hover:text-red-400">
-        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-        <span>Sair</span>
+      <button type="submit" style="width:100%; display:flex; align-items:center; gap:16px; padding:12px 16px; border-radius:9999px; font-size:18px; color:#9ca3af; background:transparent; border:none; cursor:pointer; text-align:left;" onmouseover="this.style.background='#111'; this.style.color='#f87171';" onmouseout="this.style.background='transparent'; this.style.color='#9ca3af';">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        Sair
       </button>
     </form>
 
+  </aside>
+
   <!-- ── MAIN CONTENT ── -->
-  <main class="flex-1 min-h-screen border-r border-gray-800 max-w-2xl">
+  <main style="flex:1; min-height:100vh; border-right:1px solid #2f3336; max-width:600px;">
     {% if messages %}
       {% for message in messages %}
-      <div class="bg-twitter text-white text-sm px-4 py-3 text-center">{{ message }}</div>
+      <div style="background:#1d9bf0; color:white; font-size:14px; padding:12px 16px; text-align:center;">{{ message }}</div>
       {% endfor %}
     {% endif %}
     {% block content %}{% endblock %}
   </main>
 
- <!-- ── RIGHT PANEL ── -->
-<div class="hidden lg:block w-80 px-6 py-4">
-  <div class="bg-gray-900 rounded-2xl p-4">
-    <h2 class="font-bold text-xl mb-4">Quem seguir</h2>
-    {% block suggested_users %}
-    <p class="text-gray-500 text-sm">Nenhuma sugestão no momento.</p>
-    {% endblock %}
+  <!-- ── RIGHT PANEL ── -->
+  <div style="width:320px; min-width:320px; padding:16px 24px;">
+    <div style="background:#16181c; border-radius:16px; padding:16px;">
+      <h2 style="font-weight:bold; font-size:18px; margin-bottom:16px;">Quem seguir</h2>
+      {% block suggested_users %}
+      <p style="color:#6b7280; font-size:14px;">Nenhuma sugestão no momento.</p>
+      {% endblock %}
+    </div>
   </div>
-</div>
 
 </div>
 
 {% else %}
-<!-- Layout para páginas sem autenticação -->
-<div class="min-h-screen flex items-center justify-center px-4">
+<div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:16px;">
   {% block auth_content %}{% endblock %}
 </div>
 {% endif %}
