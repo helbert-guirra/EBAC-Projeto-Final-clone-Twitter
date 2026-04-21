@@ -15,11 +15,11 @@ def feed(request):
     tweets = (
         Tweet.objects
         .filter(author_id__in=[*following_ids, request.user.id])
-        .select_related("author", "retweet_of__author")
-        .prefetch_related("likes", "comments")
+        .filter(retweet_of__isnull=True)  # ← só tweets originais
+        .select_related("author")
+        .prefetch_related("likes", "comments", "retweets")
         .order_by("-created_at")
     )
-    # Usuários que  ainda não segue (exceto eu mesmo)
     suggested_users = (
         User.objects.exclude(id=request.user.id)
         .exclude(id__in=following_ids)

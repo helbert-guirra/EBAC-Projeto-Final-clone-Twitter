@@ -77,7 +77,11 @@
 
     <!-- User card -->
     <a href="{% url 'profile' username=user.username %}" style="display:flex; align-items:center; gap:12px; padding:12px; border-radius:9999px; text-decoration:none; margin-top:8px;" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'">
-      <img src="{{ user.get_avatar_url }}" style="width:40px; height:40px; border-radius:9999px; object-fit:cover; flex-shrink:0;" />
+      <img 
+  src="{{ user.get_avatar_url }}"
+  onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/initials/svg?seed={{ user.username }}&backgroundColor=1d9bf0&fontFamily=Arial&fontSize=40&fontWeight=700';"
+  style="width:40px; height:40px; border-radius:9999px; object-fit:cover; flex-shrink:0;" 
+/>
       <div style="flex:1; min-width:0;">
         <p style="font-weight:bold; font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:white;">{{ user.get_full_name|default:user.username }}</p>
         <p style="color:#6b7280; font-size:13px;">@{{ user.username }}</p>

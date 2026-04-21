@@ -18,7 +18,7 @@ class User(AbstractUser):
     )
     following = models.ManyToManyField(
         "self",
-        symmetrical=False,          # seguir não é recíproco (A segue B ≠ B segue A)
+        symmetrical=False,
         related_name="followers",
         blank=True,
     )
@@ -26,7 +26,8 @@ class User(AbstractUser):
     def get_avatar_url(self):
         if self.avatar:
             return self.avatar.url
-        return "https://ui-avatars.com/api/?name=" + (self.get_full_name() or self.username)
+        name = self.get_full_name() or self.username
+        return f"https://api.dicebear.com/7.x/initials/svg?seed={name}&backgroundColor=1d9bf0&fontFamily=Arial&fontSize=40&fontWeight=700"
 
     def get_cover_url(self):
         if self.cover:
