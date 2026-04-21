@@ -1,18 +1,31 @@
-# Twitter Clone — Projeto Final EBAC
+# 🐦 Twitter Clone — Projeto Final EBAC
 
 Clone funcional do Twitter construído com **Django monolítico + Tailwind CSS**.
 
-## Stack
+## 📸 Preview
+
+| Feed | Perfil |
+|------|--------|
+| ![Feed](docs/feed.png) | ![Perfil](docs/perfil.png) |
+
+## 🌐 Deploy
+👉 **[Acessar aplicação](https://ebac-projeto-final-clone-twitter.onrender.com)**
+
+---
+
+## ⚙️ Stack
 
 | Camada | Tecnologia |
-|---|---|
+|--------|-----------|
 | Back-end | Python 3.11 + Django 4.2 |
 | Front-end | HTML + Tailwind CSS (CDN) + JavaScript (Fetch API) |
 | Banco de dados | PostgreSQL (produção) / SQLite (desenvolvimento) |
 | Arquivos estáticos | WhiteNoise |
 | Servidor produção | Gunicorn |
 
-## Funcionalidades
+---
+
+## ✅ Funcionalidades
 
 - ✅ Cadastro e login seguro
 - ✅ Edição de perfil (nome, bio, foto, capa) — todos os campos opcionais
@@ -27,7 +40,9 @@ Clone funcional do Twitter construído com **Django monolítico + Tailwind CSS**
 - ✅ Badge de notificações não lidas no menu
 - ✅ Dark mode nativo
 
-## Como rodar localmente
+---
+
+## 🚀 Como rodar localmente
 
 ### 1. Clone o repositório
 
@@ -70,10 +85,7 @@ python manage.py runserver
 
 Acesse em: **http://127.0.0.1:8000**
 
-## 🌐 Deploy
-
-A aplicação está hospedada em:
-👉 **https://ebac-projeto-final-clone-twitter.onrender.com**
+---
 
 ## Autor
 
